@@ -1,9 +1,11 @@
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from loguru import logger
 from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 from starlette.requests import Request
@@ -90,13 +92,31 @@ async def metrics() -> Response:
 
 app.include_router(api_v1_router)
 
-# Mount SPA — must come last so API routes take priority.
-# In development the frontend is served by Vite; in production the built
-# static files are copied here by the Dockerfile.
-try:
-    app.mount("/", StaticFiles(directory=settings.static_dir, html=True), name="spa")
-except RuntimeError:
-    logger.warning("Static dir '{}' not found — SPA not mounted", settings.static_dir)
+
+# SPA catch-all — must come after all API routes.
+# Serves real static files (JS/CSS/assets) by exact path; falls back to
+# index.html for any path that doesn't match a file, so that react-router
+# handles client-side navigation correctly on page refresh.
+@app.get("/{full_path:path}", include_in_schema=False)
+async def spa_fallback(full_path: str) -> Response:
+    # Never serve index.html for API paths; let FastAPI return its own 404.
+    # This also prevents %2F-encoded slashes from bypassing route matching.
+    if full_path.startswith("api/") or full_path == "api":
+        return Response(status_code=404)
+
+    static_root = Path(settings.static_dir)
+    candidate = (static_root / full_path).resolve()
+    # Ensure the resolved path stays inside static_dir (no traversal).
+    try:
+        candidate.relative_to(static_root.resolve())
+    except ValueError:
+        return Response(status_code=404)
+    if candidate.is_file():
+        return FileResponse(str(candidate))
+    index = static_root / "index.html"
+    if index.is_file():
+        return FileResponse(str(index))
+    return Response(status_code=404, content="SPA not built yet")
 
 
 def main() -> None:
