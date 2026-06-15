@@ -43,6 +43,7 @@ export interface ProductSummary {
   name: string;
   tagline: string;
   chip_families: string[];
+  images: string[];
   order: number;
   latest_version: string | null;
   latest_chip_family: string | null;
