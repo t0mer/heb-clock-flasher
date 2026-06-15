@@ -9,9 +9,17 @@ from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 from starlette.requests import Request
 from starlette.responses import Response
 
+from app.catalog.loader import load_catalog
+from app.catalog.store import catalog_stats, set_catalog
 from app.core.config import settings
 from app.core.logging import setup_logging
-from app.metrics import app_info, http_request_duration_seconds, registry
+from app.metrics import (
+    app_info,
+    catalog_products_total,
+    catalog_versions_total,
+    http_request_duration_seconds,
+    registry,
+)
 
 VERSION = "dev"
 
@@ -21,7 +29,15 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     setup_logging()
     app_info.info({"version": VERSION})
     logger.info("esp-web-flasher starting up, firmware_dir={}", settings.firmware_dir)
-    # Catalog is loaded in Phase 2; placeholder here.
+    try:
+        products = load_catalog(settings.firmware_dir, fail_on_empty=settings.fail_on_empty)
+        set_catalog(products)
+        stats = catalog_stats()
+        catalog_products_total.set(stats["products"])
+        catalog_versions_total.set(stats["versions"])
+    except (FileNotFoundError, RuntimeError) as exc:
+        logger.error("Catalogue load failed: {}", exc)
+        raise
     yield
     logger.info("esp-web-flasher shut down")
 
@@ -62,7 +78,8 @@ async def prometheus_middleware(request: Request, call_next):  # type: ignore[no
 
 @app.get("/health", tags=["system"])
 async def health() -> dict[str, object]:
-    return {"status": "ok", "version": VERSION, "products": 0, "versions": 0}
+    stats = catalog_stats()
+    return {"status": "ok", "version": VERSION, **stats}
 
 
 @app.get("/metrics", tags=["system"], include_in_schema=False)
