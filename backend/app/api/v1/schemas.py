@@ -68,6 +68,7 @@ class ProductSummaryOut(BaseModel):
     name: str
     tagline: str
     chip_families: list[str]
+    images: list[str]
     order: int
     latest_version: str | None
     latest_chip_family: str | None
@@ -80,6 +81,7 @@ class ProductSummaryOut(BaseModel):
             name=product.name,
             tagline=product.tagline,
             chip_families=[cf.value for cf in product.chip_families],
+            images=product.images,
             order=product.order,
             latest_version=latest.version if latest else None,
             latest_chip_family=latest.chip_family.value if latest else None,

@@ -69,6 +69,7 @@ def test_list_products_returns_one(client: TestClient) -> None:
     assert len(products) == 1
     assert products[0]["slug"] == "test-device"
     assert products[0]["name"] == "Test Device"
+    assert "images" in products[0]
 
 
 def test_list_products_latest_version(client: TestClient) -> None:
