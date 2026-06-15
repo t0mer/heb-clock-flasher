@@ -9,6 +9,7 @@ from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 from starlette.requests import Request
 from starlette.responses import Response
 
+from app.api.v1.router import router as api_v1_router
 from app.catalog.loader import load_catalog
 from app.catalog.store import catalog_stats, set_catalog
 from app.core.config import settings
@@ -86,6 +87,8 @@ async def health() -> dict[str, object]:
 async def metrics() -> Response:
     return Response(content=generate_latest(registry), media_type=CONTENT_TYPE_LATEST)
 
+
+app.include_router(api_v1_router)
 
 # Mount SPA — must come last so API routes take priority.
 # In development the frontend is served by Vite; in production the built
