@@ -3,6 +3,7 @@ import { Link, useParams, useSearchParams } from "react-router-dom";
 import { api } from "../api/client";
 import type { FirmwareVersion, Product } from "../api/types";
 import { BrowserSupportGate } from "../components/BrowserSupportGate";
+import { SerialConsole } from "../components/SerialConsole";
 import { flashDevice, type FlashPhase } from "../lib/flasher";
 import { portManager } from "../lib/webserial";
 
@@ -542,48 +543,44 @@ function FlashWizardContent({
         </div>
       </div>
 
-      {/* Serial console column (placeholder — Phase 7) */}
+      {/* Serial console column */}
       <div className="lg:col-span-2">
-        <div
-          className="card rounded-sm flex flex-col"
-          style={{
-            minHeight: "320px",
-            background: "#020508",
-            borderColor: isDone ? "var(--green)" : "var(--border)",
-            transition: "border-color 0.3s",
-          }}
-        >
+        {isDone && fw ? (
+          <SerialConsole
+            defaultBaud={fw.console.baud}
+            autoStart={true}
+            minHeight="320px"
+          />
+        ) : (
           <div
-            className="flex items-center justify-between px-3 py-2 border-b"
-            style={{ borderColor: "var(--border)" }}
+            className="card rounded-sm flex flex-col"
+            style={{ minHeight: "320px", background: "#020508", borderColor: "var(--border)" }}
           >
-            <span
-              className="text-xs uppercase tracking-widest"
-              style={{ fontFamily: "var(--font-mono)", color: "var(--text-muted)" }}
+            <div
+              className="flex items-center justify-between px-3 py-2 border-b"
+              style={{ borderColor: "var(--border)" }}
             >
-              Serial console
-            </span>
-            <span
-              className="status-dot"
-              style={{
-                background: isDone ? "var(--green)" : "var(--text-muted)",
-                width: "6px",
-                height: "6px",
-                transition: "background 0.3s",
-              }}
-            />
+              <span
+                className="text-xs uppercase tracking-widest"
+                style={{ fontFamily: "var(--font-mono)", color: "var(--text-muted)" }}
+              >
+                Serial console
+              </span>
+              <span
+                className="rounded-full flex-shrink-0"
+                style={{ width: "6px", height: "6px", background: "var(--text-muted)" }}
+              />
+            </div>
+            <div className="flex-1 flex items-center justify-center p-6">
+              <p
+                className="text-xs text-center"
+                style={{ color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}
+              >
+                Console available after flashing.
+              </p>
+            </div>
           </div>
-          <div className="flex-1 flex items-center justify-center p-6">
-            <p
-              className="text-xs text-center"
-              style={{ color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}
-            >
-              {isDone
-                ? "Serial console implementation coming in Phase 7."
-                : "Console available after flashing."}
-            </p>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
