@@ -241,10 +241,12 @@ export function HomePage() {
               className="font-display font-800 text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-6"
               style={{ color: "var(--text-primary)" }}
             >
-              Flash your{" "}
-              <span style={{ color: "var(--accent)" }}>ESP32</span>
+              Your{" "}
+              <span style={{ color: "var(--accent)" }}>Hebrew</span>
               <br />
-              from the browser.
+              Words Clock,
+              <br />
+              ready to flash.
             </h1>
 
             <p
