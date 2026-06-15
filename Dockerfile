@@ -1,17 +1,4 @@
-# Stage 1: build the React/Vite frontend
-# Always run on the build host's native platform — Vite/Rollup have native
-# binaries that break under QEMU emulation. The output is pure static assets
-# (JS/CSS) so it is identical for all target platforms.
-FROM --platform=$BUILDPLATFORM node:20-alpine AS frontend
-WORKDIR /app/frontend
-COPY frontend/package*.json ./
-RUN npm ci --silent
-COPY frontend/ ./
-RUN npm run build
-# Output lands in /app/backend/static (vite outDir)
-
-# Stage 2: Python runtime — embeds the built frontend as static files
-FROM python:3.12-slim AS runtime
+FROM python:3.12-slim
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
@@ -27,19 +14,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python deps
 COPY backend/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend/app/ /app/app/
 
-# Embed the built SPA
-COPY --from=frontend /app/backend/static /app/static
+# Pre-built SPA — built by the CI workflow before docker buildx, not inside Docker
+COPY backend/static/ /app/static/
 
-# Firmware catalogue is mounted at runtime — do not bake binaries into the image
+# Firmware catalogue is mounted at runtime
 RUN mkdir -p /app/firmware
 
-# Non-root user
 RUN useradd --create-home --uid 10001 appuser \
     && chown -R appuser:appuser /app
 USER appuser
