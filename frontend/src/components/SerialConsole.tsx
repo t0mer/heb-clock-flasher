@@ -16,6 +16,7 @@ import {
   useState,
 } from "react";
 import { startConsole, type ConsoleSession } from "../lib/serial-console";
+import { portManager } from "../lib/webserial";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -31,10 +32,20 @@ interface LogEntry {
 interface Props {
   /** Default baud rate from the firmware manifest. */
   defaultBaud: number;
-  /** If true, automatically open the console on mount. */
+  /** If true, automatically open the console on mount (after 1.25 s delay). */
   autoStart?: boolean;
   /** CSS min-height for the log pane. */
   minHeight?: string;
+  /**
+   * When true the Open button is disabled. Set while flashing so the user
+   * cannot attempt to open the port while the flasher owns it.
+   */
+  disabled?: boolean;
+  /**
+   * When this flips to true any active session is stopped automatically.
+   * Use to release the port before the flasher claims it.
+   */
+  flashActive?: boolean;
 }
 
 const BAUD_OPTIONS = [9600, 19200, 38400, 57600, 74880, 115200, 230400, 460800, 921600];
@@ -46,7 +57,13 @@ const nextId = () => ++_idSeq;
 // Component
 // ---------------------------------------------------------------------------
 
-export function SerialConsole({ defaultBaud, autoStart = false, minHeight = "320px" }: Props) {
+export function SerialConsole({
+  defaultBaud,
+  autoStart = false,
+  minHeight = "320px",
+  disabled = false,
+  flashActive = false,
+}: Props) {
   const [status, setStatus] = useState<ConsoleStatus>("idle");
   const [baud, setBaud] = useState(defaultBaud);
   const [log, setLog] = useState<LogEntry[]>([]);
@@ -122,17 +139,39 @@ export function SerialConsole({ defaultBaud, autoStart = false, minHeight = "320
     }
   }, [appendText, stopSession]);
 
-  // Auto-start
+  // Release the port the moment the flasher claims it.
   useEffect(() => {
+    if (flashActive && sessionRef.current) {
+      sessionRef.current.stop().catch(() => {});
+      sessionRef.current = null;
+      setStatus("idle");
+    }
+  }, [flashActive]);
+
+  // Auto-start — wait 1.25 s after mount so the device finishes rebooting
+  // before we try to open the serial port.
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
     if (autoStart) {
-      startSession(defaultBaud);
+      timer = setTimeout(() => startSession(defaultBaud), 1250);
     }
     return () => {
-      // Cleanup on unmount
+      clearTimeout(timer);
       sessionRef.current?.stop().catch(() => {});
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Must be called directly from the click handler so the browser allows
+  // requestPort() — acquire() is a no-op if a port is already selected.
+  const handleOpen = useCallback(async () => {
+    try {
+      await portManager.acquire();
+    } catch {
+      return; // user cancelled the device picker
+    }
+    await startSession(baud);
+  }, [baud, startSession]);
 
   const handleBaudChange = useCallback(
     async (newBaud: number) => {
@@ -273,8 +312,9 @@ export function SerialConsole({ defaultBaud, autoStart = false, minHeight = "320
             </button>
           ) : (
             <button
-              onClick={() => startSession(baud)}
-              disabled={status === "connecting"}
+              onClick={handleOpen}
+              disabled={disabled || status === "connecting"}
+              title={disabled ? "Port is busy — wait for flashing to complete" : undefined}
               className="btn btn-primary text-xs px-2 py-0.5"
             >
               {status === "connecting" ? "…" : "Open"}

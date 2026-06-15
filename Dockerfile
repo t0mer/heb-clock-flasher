@@ -24,20 +24,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python deps from pyproject.toml via pip
-COPY backend/pyproject.toml ./
-RUN pip install --no-cache-dir ".[all]" 2>/dev/null || \
-    pip install --no-cache-dir \
-        fastapi==0.115.0 \
-        "uvicorn[standard]==0.30.6" \
-        httpx==0.27.2 \
-        pydantic==2.9.2 \
-        pydantic-settings==2.5.2 \
-        loguru==0.7.2 \
-        pyyaml==6.0.2 \
-        prometheus-client==0.21.0 \
-        aiofiles==24.1.0 \
-        python-multipart==0.0.10
+# Install Python deps
+COPY backend/requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend/app/ /app/app/
 

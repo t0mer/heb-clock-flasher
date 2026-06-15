@@ -17,7 +17,8 @@ hardware:
   - "Seeed Studio XIAO ESP32-C3"
   - "7.5\" 800×480 e-paper display (Seeed XIAO ePaper Driver Board)"
   - "DS3231 RTC module (battery-backed, I2C — required)"
-images: []
+images:
+  - "https://raw.githubusercontent.com/t0mer/hebrew-time-rtc/main/assets/screenshots/rtc_solder_points.jpg"
 features:
   - "Fully offline — no NTP, no Wi-Fi, no cloud required after setup"
   - "DS3231 battery-backed RTC keeps time through power outages"
