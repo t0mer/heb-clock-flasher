@@ -16,6 +16,7 @@ import {
   useState,
 } from "react";
 import { startConsole, type ConsoleSession } from "../lib/serial-console";
+import { portManager } from "../lib/webserial";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -161,6 +162,17 @@ export function SerialConsole({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Must be called directly from the click handler so the browser allows
+  // requestPort() — acquire() is a no-op if a port is already selected.
+  const handleOpen = useCallback(async () => {
+    try {
+      await portManager.acquire();
+    } catch {
+      return; // user cancelled the device picker
+    }
+    await startSession(baud);
+  }, [baud, startSession]);
+
   const handleBaudChange = useCallback(
     async (newBaud: number) => {
       setBaud(newBaud);
@@ -300,7 +312,7 @@ export function SerialConsole({
             </button>
           ) : (
             <button
-              onClick={() => startSession(baud)}
+              onClick={handleOpen}
               disabled={disabled || status === "connecting"}
               title={disabled ? "Port is busy — wait for flashing to complete" : undefined}
               className="btn btn-primary text-xs px-2 py-0.5"
