@@ -1,5 +1,8 @@
 # Stage 1: build the React/Vite frontend
-FROM node:20-alpine AS frontend
+# Always run on the build host's native platform — Vite/Rollup have native
+# binaries that break under QEMU emulation. The output is pure static assets
+# (JS/CSS) so it is identical for all target platforms.
+FROM --platform=$BUILDPLATFORM node:20-alpine AS frontend
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm ci --silent
