@@ -19,7 +19,9 @@ jobs:
 
       - name: Resolve version
         id: version
-        run: echo "version=$(git describe --tags --abbrev=0)" >> "$GITHUB_OUTPUT"
+        run: |
+          VERSION="$(git describe --tags --abbrev=0 2>/dev/null || ./scripts/next-version.sh)"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
 
       - uses: docker/setup-qemu-action@v3
 
