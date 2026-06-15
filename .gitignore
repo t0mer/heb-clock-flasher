@@ -1,0 +1,81 @@
+# Claude / AI assistant context — local only, never track
+CLAUDE.md
+.claude/
+.cursor/
+.aider*
+
+# Design / implementation / planning docs — local only
+/docs/
+docs/*
+*.design.md
+*.implementation.md
+
+# Security scan output — local only
+scans/
+
+# Build output
+/dist/
+/bin/
+/build/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+web/node_modules/
+web/dist/
+web/ui/node_modules/
+web/ui/dist/
+web/.vite/
+*.log
+npm-debug.log*
+
+# Firmware binaries — mounted at runtime, not committed
+firmware/**/*.bin
+# But allow manifest and product metadata
+!firmware/**/manifest.yaml
+!firmware/**/product.yaml
+
+# Local dev config / data
+.env
+.env.*
+!.env.example
+/data/
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# Editor / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Go (not used in this project but keep for completeness)
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+coverage.*
+profile.cov
+go.work
+go.work.sum
+vendor/
