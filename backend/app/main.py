@@ -102,7 +102,7 @@ except RuntimeError:
 def main() -> None:
     import uvicorn
 
-    uvicorn.run("app.main:app", host="0.0.0.0", port=settings.port, reload=False)
+    uvicorn.run("app.main:app", host="0.0.0.0", port=settings.port, reload=False)  # nosec B104
 
 
 if __name__ == "__main__":

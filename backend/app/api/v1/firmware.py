@@ -45,7 +45,7 @@ def _part_path(slug: str, version: str, filename: str) -> Path:
 def _etag(path: Path) -> str:
     stat = path.stat()
     raw = f"{path}:{stat.st_size}:{stat.st_mtime_ns}"
-    return hashlib.md5(raw.encode()).hexdigest()  # noqa: S324 — ETag, not crypto
+    return hashlib.md5(raw.encode(), usedforsecurity=False).hexdigest()
 
 
 @router.get(
