@@ -122,13 +122,15 @@ export function SerialConsole({ defaultBaud, autoStart = false, minHeight = "320
     }
   }, [appendText, stopSession]);
 
-  // Auto-start
+  // Auto-start — wait 1.25 s after mount so the device finishes rebooting
+  // before we try to open the serial port.
   useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
     if (autoStart) {
-      startSession(defaultBaud);
+      timer = setTimeout(() => startSession(defaultBaud), 1250);
     }
     return () => {
-      // Cleanup on unmount
+      clearTimeout(timer);
       sessionRef.current?.stop().catch(() => {});
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
