@@ -1,0 +1,20 @@
+services:
+  esp-web-flasher:
+    image: techblog/esp-web-flasher:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      # Firmware catalogue — drop product dirs here; no image rebuild needed
+      - ./firmware:/app/firmware
+    environment:
+      LOG_LEVEL: info
+      FAIL_ON_EMPTY: "true"
+      # ADMIN_TOKEN: ""        # Uncomment to enable POST /api/v1/admin/reload
+      # CORS_ORIGINS: ""       # Only needed when SPA is served from a different origin
+    restart: unless-stopped
+    # NOTE: Web Serial API requires HTTPS in production.
+    # Place this container behind a reverse proxy (nginx/Caddy/Traefik) with TLS.
+    # Local development on http://localhost:8080 is exempt from the HTTPS requirement.

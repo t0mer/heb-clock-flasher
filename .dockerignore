@@ -1,0 +1,44 @@
+.git
+.github
+.claude/
+.cursor/
+.aider*
+CLAUDE.md
+*.design.md
+*.implementation.md
+docs/
+scans/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+backend/tests/
+
+# Frontend build artifacts (built fresh in Docker stage 1)
+frontend/node_modules/
+frontend/dist/
+
+# Backend static (built by Docker stage 1, not from host)
+backend/static/
+
+# Firmware binaries — mounted at runtime
+firmware/**/*.bin
+
+# Editor / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Dev config
+.env
+.env.*
+*.log
