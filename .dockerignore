@@ -21,12 +21,11 @@ venv/
 htmlcov/
 backend/tests/
 
-# Frontend build artifacts (built fresh in Docker stage 1)
+# Frontend — node_modules not needed in image; dist is the vite output dir
 frontend/node_modules/
 frontend/dist/
 
-# Backend static (built by Docker stage 1, not from host)
-backend/static/
+# backend/static is built by the CI workflow and copied into the image — include it
 
 # Firmware binaries — mounted at runtime
 firmware/**/*.bin
