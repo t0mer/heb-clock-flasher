@@ -46,7 +46,7 @@ export function Navbar() {
             className="font-display font-700 text-sm tracking-widest uppercase"
             style={{ color: "var(--text-primary)", letterSpacing: "0.15em" }}
           >
-            ESP<span style={{ color: "var(--accent)" }}>·</span>Flasher
+            Hebrew<span style={{ color: "var(--accent)" }}>·</span>Words Clock
           </span>
         </Link>
 
