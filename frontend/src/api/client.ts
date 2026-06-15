@@ -59,7 +59,9 @@ export const api = {
   espWebToolsUrl: (slug: string, version: string): string =>
     `${BASE}/products/${encodeURIComponent(slug)}/versions/${encodeURIComponent(version)}/esp-web-tools.json`,
 
-  /** URL for a product image. */
+  /** URL for a product image. Absolute URLs (remote) are returned as-is. */
   imageUrl: (slug: string, imagePath: string): string =>
-    `${BASE}/products/${encodeURIComponent(slug)}/images/${imagePath}`,
+    imagePath.startsWith("http://") || imagePath.startsWith("https://")
+      ? imagePath
+      : `${BASE}/products/${encodeURIComponent(slug)}/images/${imagePath}`,
 };

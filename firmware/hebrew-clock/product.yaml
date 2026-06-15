@@ -17,7 +17,13 @@ hardware:
   - "Seeed Studio XIAO ESP32-C3"
   - "7.5\" 800×480 e-paper display (Seeed XIAO ePaper Driver Board)"
   - "Optional: DS3231 RTC module (I2C)"
-images: []
+images:
+  - "https://raw.githubusercontent.com/t0mer/hebrew-clock/main/assets/screenshots/clock-main-heebo-raanana.png"
+  - "https://raw.githubusercontent.com/t0mer/hebrew-clock/main/assets/screenshots/clock-main-frankruh-jerusalem.png"
+  - "https://raw.githubusercontent.com/t0mer/hebrew-clock/main/assets/screenshots/clock-main-noto-telaviv.png"
+  - "https://raw.githubusercontent.com/t0mer/hebrew-clock/main/assets/screenshots/clock-jewish.png"
+  - "https://raw.githubusercontent.com/t0mer/hebrew-clock/main/assets/screenshots/clock-sleep.png"
+  - "https://raw.githubusercontent.com/t0mer/hebrew-clock/main/assets/screenshots/esp-config-ui.png"
 features:
   - "Hebrew time in natural words with niqud (e.g. \"רְבִיעִית לַשֵּׁשׁ\")"
   - "Analog clock face overlay"
