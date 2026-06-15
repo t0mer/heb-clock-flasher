@@ -236,101 +236,64 @@ export function HomePage() {
         style={{ borderColor: "var(--border)" }}
       >
         <div className="max-w-6xl mx-auto px-6 py-20 lg:py-28">
-          <div className="max-w-2xl animate-fade-in-up">
-            <h1
-              className="font-display font-800 text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-6"
-              style={{ color: "var(--text-primary)" }}
-            >
-              Your{" "}
-              <span style={{ color: "var(--accent)" }}>Hebrew</span>
-              <br />
-              Words Clock,
-              <br />
-              ready to flash.
-            </h1>
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Text */}
+            <div className="animate-fade-in-up">
+              <h1
+                className="font-display font-800 text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-6"
+                style={{ color: "var(--text-primary)" }}
+              >
+                Your{" "}
+                <span style={{ color: "var(--accent)" }}>Hebrew</span>
+                <br />
+                Words Clock,
+                <br />
+                ready to flash.
+              </h1>
 
-            <p
-              className="text-lg leading-relaxed mb-8"
-              style={{ color: "var(--text-secondary)", maxWidth: "46ch" }}
-            >
-              No local tooling. No drivers. No command line. Plug in your device,
-              pick a firmware, and flash — everything happens right here in Chrome
-              or Edge.
-            </p>
+              <p
+                className="text-lg leading-relaxed mb-8"
+                style={{ color: "var(--text-secondary)", maxWidth: "46ch" }}
+              >
+                No local tooling. No drivers. No command line. Plug in your device,
+                pick a firmware, and flash — everything happens right here in Chrome
+                or Edge.
+              </p>
 
-            {/* Feature pills */}
-            <div className="flex flex-wrap gap-2">
-              {[
-                "Web Serial API",
-                "esptool-js",
-                "Live console",
-                "HTTPS required",
-              ].map((tag) => (
-                <span
-                  key={tag}
-                  className="text-xs px-2.5 py-1 rounded-sm"
-                  style={{
-                    background: "var(--bg-elevated)",
-                    border: "1px solid var(--border)",
-                    color: "var(--text-muted)",
-                    fontFamily: "var(--font-mono)",
-                  }}
-                >
-                  {tag}
-                </span>
-              ))}
+              {/* Feature pills */}
+              <div className="flex flex-wrap gap-2">
+                {[
+                  "Web Serial API",
+                  "esptool-js",
+                  "Live console",
+                  "HTTPS required",
+                ].map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-xs px-2.5 py-1 rounded-sm"
+                    style={{
+                      background: "var(--bg-elevated)",
+                      border: "1px solid var(--border)",
+                      color: "var(--text-muted)",
+                      fontFamily: "var(--font-mono)",
+                    }}
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Hero image */}
+            <div className="flex items-center justify-center">
+              <img
+                src="https://github.com/t0mer/hebrew-clock/raw/main/assets/screenshots/clock-main-heebo-raanana.png"
+                alt="Hebrew Words Clock display"
+                className="rounded-lg w-full max-w-sm lg:max-w-full object-contain"
+                style={{ boxShadow: "0 0 48px 0 color-mix(in srgb, var(--accent) 20%, transparent)" }}
+              />
             </div>
           </div>
-        </div>
-
-        {/* Decorative chip art — desktop only */}
-        <div
-          className="absolute right-0 top-0 bottom-0 w-64 opacity-10 pointer-events-none select-none hidden xl:flex items-center justify-center"
-          aria-hidden
-        >
-          <svg viewBox="0 0 220 280" fill="none" className="h-full">
-            <defs>
-              <pattern id="hero-grid" width="14" height="14" patternUnits="userSpaceOnUse">
-                <path d="M14 0L0 0 0 14" fill="none" stroke="var(--accent)" strokeWidth="0.3" />
-              </pattern>
-            </defs>
-            <rect width="220" height="280" fill="url(#hero-grid)" />
-
-            {/* Module body */}
-            <rect x="50" y="50" width="120" height="180" rx="6" fill="var(--bg-surface)" stroke="var(--accent)" strokeWidth="1.5" />
-            <rect x="60" y="60" width="100" height="160" rx="3" fill="var(--bg-base)" stroke="var(--accent-dim)" strokeWidth="0.5" />
-
-            {/* USB port at bottom */}
-            <rect x="84" y="216" width="52" height="20" rx="2" fill="var(--bg-elevated)" stroke="var(--accent)" strokeWidth="1" />
-            <rect x="92" y="220" width="36" height="12" rx="1" fill="var(--bg-base)" stroke="var(--accent-dim)" strokeWidth="0.5" />
-
-            {/* Antenna stub top-right */}
-            <rect x="138" y="40" width="8" height="28" rx="2" fill="var(--accent)" opacity="0.6" />
-
-            {/* Left pads */}
-            {[80, 100, 120, 140, 160, 180].map((y) => (
-              <g key={y}>
-                <line x1="30" y1={y} x2="50" y2={y} stroke="var(--accent)" strokeWidth="1.5" />
-                <rect x="14" y={y - 5} width="16" height="10" rx="1.5" fill="var(--bg-surface)" stroke="var(--accent-dim)" strokeWidth="0.5" />
-              </g>
-            ))}
-
-            {/* Right pads */}
-            {[80, 100, 120, 140, 160, 180].map((y) => (
-              <g key={y}>
-                <line x1="170" y1={y} x2="190" y2={y} stroke="var(--accent)" strokeWidth="1.5" />
-                <rect x="190" y={y - 5} width="16" height="10" rx="1.5" fill="var(--bg-surface)" stroke="var(--accent-dim)" strokeWidth="0.5" />
-              </g>
-            ))}
-
-            {/* Chip label */}
-            <text x="110" y="142" textAnchor="middle" fill="var(--accent)" fontSize="11" fontFamily="monospace" fontWeight="700" letterSpacing="1.5">XIAO</text>
-            <text x="110" y="158" textAnchor="middle" fill="var(--accent)" fontSize="9" fontFamily="monospace" opacity="0.7" letterSpacing="1">ESP32-C3</text>
-
-            {/* Status LED */}
-            <circle cx="90" cy="74" r="3" fill="var(--green)" opacity="0.8" />
-            <circle cx="102" cy="74" r="3" fill="var(--amber)" opacity="0.5" />
-          </svg>
         </div>
       </section>
 
