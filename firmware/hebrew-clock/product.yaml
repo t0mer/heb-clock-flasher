@@ -1,0 +1,30 @@
+slug: hebrew-clock
+name: "Hebrew Clock"
+tagline: "A Hebrew word-clock for 7.5\" e-paper displays"
+summary: |
+  Server-rendered Hebrew word clock for a 7.5" 800×480 e-paper panel driven by
+  a Seeed Studio XIAO ESP32-C3. The ESP fetches a freshly rendered PNG from a
+  home server over Wi-Fi and displays the current Israel time in natural written
+  Hebrew with niqud, alongside an analog clock face, date line, and weather icon.
+
+  Wi-Fi credentials are configured via a captive-portal AP on first boot.
+  An optional DS3231 RTC module keeps the clock running through brief outages.
+repo: "https://github.com/t0mer/hebrew-clock"
+license: "Apache-2.0"
+chip_families:
+  - esp32c3
+hardware:
+  - "Seeed Studio XIAO ESP32-C3"
+  - "7.5\" 800×480 e-paper display (Seeed XIAO ePaper Driver Board)"
+  - "Optional: DS3231 RTC module (I2C)"
+images: []
+features:
+  - "Hebrew time in natural words with niqud (e.g. \"רְבִיעִית לַשֵּׁשׁ\")"
+  - "Analog clock face overlay"
+  - "Date line — Gregorian or Jewish (Hebrew) calendar mode"
+  - "Live weather icon fetched from the server"
+  - "Morning quiet window and night sleep mode"
+  - "Captive-portal Wi-Fi setup — no app or serial cable needed"
+links:
+  setup_guide: "https://github.com/t0mer/hebrew-clock/blob/main/epaper.md"
+order: 1

@@ -1,0 +1,29 @@
+slug: hebrew-time-rtc
+name: "Hebrew Time (RTC)"
+tagline: "Fully offline Hebrew word-clock with battery-backed RTC"
+summary: |
+  Offline Hebrew word clock driven by a DS3231 battery-backed RTC and a 7.5"
+  800×480 e-paper panel. No NTP, no server, no cloud — once the time is set via
+  the "HebTime" captive-portal AP, the clock runs indefinitely from the RTC even
+  through power outages.
+
+  Ideal for locations without reliable internet access or for users who prefer a
+  fully self-contained device.
+repo: "https://github.com/t0mer/hebrew-time-rtc"
+license: "Apache-2.0"
+chip_families:
+  - esp32c3
+hardware:
+  - "Seeed Studio XIAO ESP32-C3"
+  - "7.5\" 800×480 e-paper display (Seeed XIAO ePaper Driver Board)"
+  - "DS3231 RTC module (battery-backed, I2C — required)"
+images: []
+features:
+  - "Fully offline — no NTP, no Wi-Fi, no cloud required after setup"
+  - "DS3231 battery-backed RTC keeps time through power outages"
+  - "Time set once via \"HebTime\" captive-portal AP"
+  - "Hebrew time in natural words"
+  - "Low power — e-paper holds the image without power"
+links:
+  setup_guide: "https://github.com/t0mer/hebrew-time-rtc"
+order: 2
