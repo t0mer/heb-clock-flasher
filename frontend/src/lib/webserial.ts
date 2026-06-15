@@ -1,17 +1,13 @@
 /**
- * Web Serial API capability detection and port lifecycle helpers.
+ * Web Serial API capability detection and port lifecycle manager.
  *
  * Web Serial requires:
  *   - A Chromium-based browser (Chrome 89+, Edge 89+, Opera 75+)
  *   - A secure context: HTTPS in production, or http://localhost / 127.0.0.1
  *
- * Firefox and Safari do not support Web Serial. Mobile browsers do not either.
- *
  * The flasher and the serial console share ONE SerialPort.  Only one consumer
- * may hold port.readable / port.writable at a time.  Callers must fully
- * release (cancel reader, releaseLock) before the other consumer opens its
- * streams.  The port lifecycle state machine lives here so that flasher.ts and
- * serial-console.ts coordinate through a single shared reference.
+ * may hold port.readable / port.writable at a time.  This module is the single
+ * source of truth for the port reference and which consumer owns it.
  */
 
 export type WebSerialSupport =
@@ -39,15 +35,87 @@ export function detectWebSerialSupport(): WebSerialSupport {
 export const isWebSerialSupported = (): boolean =>
   detectWebSerialSupport() === "supported";
 
+// ---------------------------------------------------------------------------
+// Port lifecycle state machine
+// ---------------------------------------------------------------------------
+
 /**
- * Request a serial port from the user (triggers the browser's port picker).
- * Must be called from a user gesture (click handler).
+ * Who currently owns the open port.
+ * "idle" means we have a reference but the port is closed (between flash & console).
+ * "none" means no port has been acquired.
  */
-export async function requestPort(
-  filters?: SerialPortFilter[],
-): Promise<SerialPort> {
-  return navigator.serial.requestPort({ filters: filters ?? [] });
+export type PortOwner = "none" | "idle" | "flashing" | "console";
+
+class PortManager {
+  private _port: SerialPort | null = null;
+  private _owner: PortOwner = "none";
+
+  get port(): SerialPort | null {
+    return this._port;
+  }
+
+  get owner(): PortOwner {
+    return this._owner;
+  }
+
+  /**
+   * Show the browser port picker and acquire a port.
+   * If a port is already held, returns it without prompting.
+   * Must be called from a user-gesture handler.
+   */
+  async acquire(filters?: SerialPortFilter[]): Promise<SerialPort> {
+    if (this._port && this._owner !== "none") {
+      return this._port;
+    }
+    this._port = await navigator.serial.requestPort({ filters: filters ?? [] });
+    this._owner = "idle";
+    return this._port;
+  }
+
+  /** Claim the port for the flasher. Returns the port. */
+  claimForFlash(): SerialPort {
+    if (!this._port) throw new Error("No port acquired");
+    this._owner = "flashing";
+    return this._port;
+  }
+
+  /** Called after transport.disconnect() — port is now closed, reference kept. */
+  releaseFromFlash(): void {
+    this._owner = "idle";
+  }
+
+  /** Claim the port for the serial console. Returns the port. */
+  claimForConsole(): SerialPort {
+    if (!this._port) throw new Error("No port acquired");
+    this._owner = "console";
+    return this._port;
+  }
+
+  /** Called when the serial console closes. Port is closed; reference released. */
+  async releaseFromConsole(): Promise<void> {
+    this._owner = "idle";
+  }
+
+  /** Fully forget the port (disconnect clicked). */
+  async forget(): Promise<void> {
+    if (this._port) {
+      try {
+        await this._port.close();
+      } catch {
+        // ignore — may already be closed
+      }
+      this._port = null;
+    }
+    this._owner = "none";
+  }
 }
+
+/** Singleton port lifecycle manager shared by flasher and serial console. */
+export const portManager = new PortManager();
+
+// ---------------------------------------------------------------------------
+// Lower-level helpers (used by serial-console.ts in Phase 7)
+// ---------------------------------------------------------------------------
 
 /**
  * Fully release a port's readable stream so another consumer can open it.
