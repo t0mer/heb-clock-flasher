@@ -237,16 +237,6 @@ export function HomePage() {
       >
         <div className="max-w-6xl mx-auto px-6 py-20 lg:py-28">
           <div className="max-w-2xl animate-fade-in-up">
-            <div className="flex items-center gap-2 mb-6">
-              <span className="status-dot status-dot-accent animate-pulse-accent" />
-              <span
-                className="text-xs uppercase tracking-widest"
-                style={{ fontFamily: "var(--font-mono)", color: "var(--text-secondary)" }}
-              >
-                Browser-based ESP32 flashing
-              </span>
-            </div>
-
             <h1
               className="font-display font-800 text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-6"
               style={{ color: "var(--text-primary)" }}
