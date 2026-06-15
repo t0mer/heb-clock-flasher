@@ -543,44 +543,15 @@ function FlashWizardContent({
         </div>
       </div>
 
-      {/* Serial console column */}
+      {/* Serial console column — always visible */}
       <div className="lg:col-span-2">
-        {isDone && fw ? (
-          <SerialConsole
-            defaultBaud={fw.console.baud}
-            autoStart={true}
-            minHeight="320px"
-          />
-        ) : (
-          <div
-            className="card rounded-sm flex flex-col"
-            style={{ minHeight: "320px", background: "#020508", borderColor: "var(--border)" }}
-          >
-            <div
-              className="flex items-center justify-between px-3 py-2 border-b"
-              style={{ borderColor: "var(--border)" }}
-            >
-              <span
-                className="text-xs uppercase tracking-widest"
-                style={{ fontFamily: "var(--font-mono)", color: "var(--text-muted)" }}
-              >
-                Serial console
-              </span>
-              <span
-                className="rounded-full flex-shrink-0"
-                style={{ width: "6px", height: "6px", background: "var(--text-muted)" }}
-              />
-            </div>
-            <div className="flex-1 flex items-center justify-center p-6">
-              <p
-                className="text-xs text-center"
-                style={{ color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}
-              >
-                Console available after flashing.
-              </p>
-            </div>
-          </div>
-        )}
+        <SerialConsole
+          defaultBaud={fw?.console.baud ?? 115200}
+          autoStart={isDone}
+          disabled={isFlashing}
+          flashActive={isFlashing}
+          minHeight="320px"
+        />
       </div>
     </div>
   );
