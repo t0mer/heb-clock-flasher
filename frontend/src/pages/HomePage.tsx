@@ -260,28 +260,6 @@ export function HomePage() {
                 or Edge.
               </p>
 
-              {/* Feature pills */}
-              <div className="flex flex-wrap gap-2">
-                {[
-                  "Web Serial API",
-                  "esptool-js",
-                  "Live console",
-                  "HTTPS required",
-                ].map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-xs px-2.5 py-1 rounded-sm"
-                    style={{
-                      background: "var(--bg-elevated)",
-                      border: "1px solid var(--border)",
-                      color: "var(--text-muted)",
-                      fontFamily: "var(--font-mono)",
-                    }}
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
             </div>
 
             {/* Hero image */}
