@@ -6,6 +6,7 @@ import { BrowserSupportGate } from "../components/BrowserSupportGate";
 import { SerialConsole } from "../components/SerialConsole";
 import { flashDevice, type FlashPhase } from "../lib/flasher";
 import { portManager } from "../lib/webserial";
+import { usePageMeta } from "../lib/seo";
 
 // ---------------------------------------------------------------------------
 // Step indicator
@@ -569,6 +570,19 @@ export function FlashPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  usePageMeta({
+    title: product
+      ? `Flash ${product.name} — Hebrew Clock Web Flasher`
+      : "Flash Firmware — Hebrew Clock Web Flasher",
+    description: product
+      ? `Flash ${product.name} firmware to your ESP32 device directly from your browser. No software installation required.`
+      : "Flash ESP32 firmware directly from your browser.",
+    keywords: product
+      ? `flash ${product.name}, ESP32 firmware, browser flash, ${product.chip_families.join(", ")}`
+      : "ESP32, flash firmware, browser",
+    ogType: "website",
+  });
 
   useEffect(() => {
     if (!slug) return;

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api/client";
 import type { ProductSummary } from "../api/types";
+import { usePageMeta } from "../lib/seo";
 
 // ---------------------------------------------------------------------------
 // Decorative chip SVG — shown when a product has no hero image
@@ -214,6 +215,16 @@ function SkeletonCard() {
 // ---------------------------------------------------------------------------
 
 export function HomePage() {
+  usePageMeta({
+    title: "Hebrew Clock Web Flasher — Flash Hebrew Words Clock Firmware",
+    description:
+      "Flash Hebrew Words Clock firmware to your ESP32 device directly from your browser. No software or drivers needed — works in Chrome and Edge.",
+    keywords:
+      "Hebrew clock, ESP32 flasher, firmware, e-paper clock, word clock, Hebrew words, browser flash, XIAO ESP32-C3",
+    ogImage:
+      "https://github.com/t0mer/hebrew-clock/raw/main/assets/screenshots/clock-main-heebo-raanana.png",
+  });
+
   const [products, setProducts] = useState<ProductSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
