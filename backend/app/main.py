@@ -1,3 +1,4 @@
+import re
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
@@ -26,6 +27,28 @@ from app.metrics import (
 )
 
 VERSION = "dev"
+
+_SAFE_TAG_ID = re.compile(r"^[A-Z0-9][A-Z0-9\-]{1,30}$", re.IGNORECASE)
+
+
+def _google_tag_snippet(tag_id: str) -> str:
+    """Return the appropriate Google tag HTML snippet, or empty string if tag_id is invalid."""
+    if not _SAFE_TAG_ID.match(tag_id):
+        return ""
+    if tag_id.upper().startswith("GTM-"):
+        return (
+            f'<script>(function(w,d,s,l,i){{w[l]=w[l]||[];w[l].push({{"gtm.start":'
+            f'new Date().getTime(),event:"gtm.js"}});var f=d.getElementsByTagName(s)[0],'
+            f'j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src='
+            f'"https://www.googletagmanager.com/gtm.js?id="+i+dl;f.parentNode.insertBefore(j,f);'
+            f'}})(window,document,"script","dataLayer","{tag_id}");</script>'
+        )
+    return (
+        f'<script async src="https://www.googletagmanager.com/gtag/js?id={tag_id}"></script>'
+        f'<script>window.dataLayer=window.dataLayer||[];'
+        f'function gtag(){{dataLayer.push(arguments);}}gtag("js",new Date());'
+        f'gtag("config","{tag_id}");</script>'
+    )
 
 
 @asynccontextmanager
@@ -95,6 +118,16 @@ app.include_router(api_v1_router)
 app.include_router(seo_router)
 
 
+def _serve_index(index: Path) -> Response:
+    """Serve index.html with the Google tag snippet injected server-side if configured."""
+    html = index.read_text(encoding="utf-8")
+    if settings.google_tag_id:
+        snippet = _google_tag_snippet(settings.google_tag_id)
+        if snippet:
+            html = html.replace("</head>", f"{snippet}\n</head>", 1)
+    return Response(content=html, media_type="text/html")
+
+
 # SPA catch-all — must come after all API routes.
 # Serves real static files (JS/CSS/assets) by exact path; falls back to
 # index.html for any path that doesn't match a file, so that react-router
@@ -102,7 +135,6 @@ app.include_router(seo_router)
 @app.get("/{full_path:path}", include_in_schema=False)
 async def spa_fallback(full_path: str) -> Response:
     # Never serve index.html for API paths; let FastAPI return its own 404.
-    # This also prevents %2F-encoded slashes from bypassing route matching.
     if full_path.startswith("api/") or full_path == "api":
         return Response(status_code=404)
     if full_path in ("robots.txt", "sitemap.xml"):
@@ -119,7 +151,7 @@ async def spa_fallback(full_path: str) -> Response:
         return FileResponse(str(candidate))
     index = static_root / "index.html"
     if index.is_file():
-        return FileResponse(str(index))
+        return _serve_index(index)
     return Response(status_code=404, content="SPA not built yet")
 
 
