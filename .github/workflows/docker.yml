@@ -2,16 +2,13 @@ name: Docker Build
 
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: "Version (leave blank to auto-compute YYYY.M.PATCH)"
-        required: false
 
 jobs:
   docker:
+    name: Rebuild & push image
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
 
     steps:
       - name: Checkout
@@ -21,24 +18,7 @@ jobs:
 
       - name: Resolve version
         id: version
-        env:
-          INPUT_VERSION: ${{ github.event.inputs.version }}
-        run: |
-          if [ -n "${INPUT_VERSION}" ]; then
-            VERSION="${INPUT_VERSION}"
-          else
-            VERSION="$(./scripts/next-version.sh)"
-          fi
-          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
-
-      - name: Create and push tag
-        env:
-          VERSION: ${{ steps.version.outputs.version }}
-        run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag "${VERSION}"
-          git push origin "${VERSION}"
+        run: echo "version=$(git describe --tags --abbrev=0)" >> "$GITHUB_OUTPUT"
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
