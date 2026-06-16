@@ -2,7 +2,7 @@
 FROM node:20-alpine AS frontend
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
-RUN npm ci --silent
+RUN npm ci
 COPY frontend/ ./
 RUN npm run build
 # Output lands in /app/backend/static (vite outDir)
