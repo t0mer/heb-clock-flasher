@@ -1,5 +1,5 @@
 # Stage 1: Build the React/Vite UI
-FROM --platform=$BUILDPLATFORM node:24-alpine AS ui-builder
+FROM node:20-alpine AS ui-builder
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm ci
