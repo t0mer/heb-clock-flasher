@@ -1,5 +1,5 @@
 # Stage 1: Build React/Vite frontend
-FROM node:20-alpine AS frontend
+FROM node:24-alpine AS frontend
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm ci
