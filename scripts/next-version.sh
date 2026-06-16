@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-TODAY="$(date +%Y.%-m)"
+TODAY="$(date +%Y.%-d)"
 LATEST="$(git tag --list "${TODAY}.*" 2>/dev/null | sort -V | tail -1)"
 if [ -z "$LATEST" ]; then
   echo "${TODAY}.0"
