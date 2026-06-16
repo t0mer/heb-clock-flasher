@@ -2,12 +2,16 @@ import { useEffect } from "react";
 
 const DEFAULT_OG_IMAGE =
   "https://github.com/t0mer/hebrew-clock/raw/main/assets/screenshots/clock-main-heebo-raanana.png";
+const DEFAULT_OG_IMAGE_WIDTH = "800";
+const DEFAULT_OG_IMAGE_HEIGHT = "480";
 
 interface PageMeta {
   title: string;
   description: string;
   keywords?: string;
   ogImage?: string;
+  ogImageWidth?: string;
+  ogImageHeight?: string;
   ogType?: "website" | "article";
   canonical?: string;
 }
@@ -46,6 +50,8 @@ export function usePageMeta(meta: PageMeta): void {
   useEffect(() => {
     const canonical = meta.canonical ?? window.location.origin + window.location.pathname;
     const image = meta.ogImage || DEFAULT_OG_IMAGE;
+    const imageWidth = meta.ogImage ? (meta.ogImageWidth ?? "") : DEFAULT_OG_IMAGE_WIDTH;
+    const imageHeight = meta.ogImage ? (meta.ogImageHeight ?? "") : DEFAULT_OG_IMAGE_HEIGHT;
 
     document.title = meta.title;
 
@@ -57,6 +63,8 @@ export function usePageMeta(meta: PageMeta): void {
     setOgMeta("og:type", meta.ogType ?? "website");
     setOgMeta("og:url", canonical);
     setOgMeta("og:image", image);
+    if (imageWidth) setOgMeta("og:image:width", imageWidth);
+    if (imageHeight) setOgMeta("og:image:height", imageHeight);
 
     setOgMeta("twitter:card", "summary_large_image");
     setOgMeta("twitter:title", meta.title);
@@ -64,5 +72,5 @@ export function usePageMeta(meta: PageMeta): void {
     setOgMeta("twitter:image", image);
 
     setCanonical(canonical);
-  }, [meta.title, meta.description, meta.keywords, meta.ogImage, meta.canonical]);
+  }, [meta.title, meta.description, meta.keywords, meta.ogImage, meta.ogImageWidth, meta.ogImageHeight, meta.canonical]);
 }
