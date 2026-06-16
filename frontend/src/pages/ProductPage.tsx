@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import rehypeSanitize from "rehype-sanitize";
 import { api } from "../api/client";
 import type { Product } from "../api/types";
+import { usePageMeta } from "../lib/seo";
 
 // ---------------------------------------------------------------------------
 // Image gallery
@@ -172,6 +173,18 @@ export function ProductPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  usePageMeta({
+    title: product
+      ? `${product.name} — Hebrew Clock Web Flasher`
+      : "Product — Hebrew Clock Web Flasher",
+    description: product?.tagline || "View product details and flash firmware to your ESP32 device.",
+    keywords: product
+      ? `${product.name}, ${product.chip_families.join(", ")}, ESP32, firmware, Hebrew clock`
+      : "ESP32, firmware, Hebrew clock",
+    ogImage: product?.images?.[0] ?? undefined,
+    ogType: "article",
+  });
 
   useEffect(() => {
     if (!slug) return;

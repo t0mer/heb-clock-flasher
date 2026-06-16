@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     admin_token: str = ""
     cors_origins: str = ""
     static_dir: str = "./static"
+    site_url: str = ""
+    google_tag_id: str = ""
 
 
 settings = Settings()

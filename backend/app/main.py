@@ -12,6 +12,7 @@ from starlette.requests import Request
 from starlette.responses import Response
 
 from app.api.v1.router import router as api_v1_router
+from app.api.v1.seo import router as seo_router
 from app.catalog.loader import load_catalog
 from app.catalog.store import catalog_stats, set_catalog
 from app.core.config import settings
@@ -91,6 +92,7 @@ async def metrics() -> Response:
 
 
 app.include_router(api_v1_router)
+app.include_router(seo_router)
 
 
 # SPA catch-all — must come after all API routes.
@@ -102,6 +104,8 @@ async def spa_fallback(full_path: str) -> Response:
     # Never serve index.html for API paths; let FastAPI return its own 404.
     # This also prevents %2F-encoded slashes from bypassing route matching.
     if full_path.startswith("api/") or full_path == "api":
+        return Response(status_code=404)
+    if full_path in ("robots.txt", "sitemap.xml"):
         return Response(status_code=404)
 
     static_root = Path(settings.static_dir)
