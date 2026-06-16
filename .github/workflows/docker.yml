@@ -1,22 +1,27 @@
-name: Docker
+name: Docker Build
 
 on:
   workflow_dispatch:
-  release:
-    types: [published]
+  workflow_run:
+    workflows: ["Release"]
+    types:
+      - completed
 
 jobs:
   docker:
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Resolve version
+      - name: Get version
         id: version
-        run: echo "version=$(git describe --tags --abbrev=0)" >> "$GITHUB_OUTPUT"
+        run: |
+          VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "$(echo ${GITHUB_SHA} | cut -c1-7)")
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -34,7 +39,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           build-args: VERSION=${{ steps.version.outputs.version }}
           tags: |
