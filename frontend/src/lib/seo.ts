@@ -1,5 +1,8 @@
 import { useEffect } from "react";
 
+const DEFAULT_OG_IMAGE =
+  "https://github.com/t0mer/hebrew-clock/raw/main/assets/screenshots/clock-main-heebo-raanana.png";
+
 interface PageMeta {
   title: string;
   description: string;
@@ -42,6 +45,7 @@ function setCanonical(href: string): void {
 export function usePageMeta(meta: PageMeta): void {
   useEffect(() => {
     const canonical = meta.canonical ?? window.location.origin + window.location.pathname;
+    const image = meta.ogImage || DEFAULT_OG_IMAGE;
 
     document.title = meta.title;
 
@@ -52,12 +56,12 @@ export function usePageMeta(meta: PageMeta): void {
     setOgMeta("og:description", meta.description);
     setOgMeta("og:type", meta.ogType ?? "website");
     setOgMeta("og:url", canonical);
-    if (meta.ogImage) setOgMeta("og:image", meta.ogImage);
+    setOgMeta("og:image", image);
 
     setOgMeta("twitter:card", "summary_large_image");
     setOgMeta("twitter:title", meta.title);
     setOgMeta("twitter:description", meta.description);
-    if (meta.ogImage) setOgMeta("twitter:image", meta.ogImage);
+    setOgMeta("twitter:image", image);
 
     setCanonical(canonical);
   }, [meta.title, meta.description, meta.keywords, meta.ogImage, meta.canonical]);
