@@ -573,14 +573,14 @@ export function FlashPage() {
 
   usePageMeta({
     title: product
-      ? `Flash ${product.name} — Hebrew Clock Web Flasher`
-      : "Flash Firmware — Hebrew Clock Web Flasher",
+      ? `Flash ${product.name} — Hebrew Words Clock Web Flasher`
+      : "Flash Firmware — Hebrew Words Clock Web Flasher",
     description: product
-      ? `Flash ${product.name} firmware to your ESP32 device directly from your browser. No software installation required.`
-      : "Flash ESP32 firmware directly from your browser.",
+      ? `Flash your Hebrew Words Clock (${product.name}) firmware to your ESP32 device directly from your browser. No software installation required.`
+      : "Flash Hebrew Words Clock firmware to your ESP32 directly from your browser.",
     keywords: product
-      ? `flash ${product.name}, ESP32 firmware, browser flash, ${product.chip_families.join(", ")}`
-      : "ESP32, flash firmware, browser",
+      ? `flash ${product.name}, Hebrew Words Clock, ESP32 firmware, browser flash, ${product.chip_families.join(", ")}`
+      : "Hebrew Words Clock, ESP32, flash firmware, browser",
     ogType: "website",
   });
 

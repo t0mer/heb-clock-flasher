@@ -216,11 +216,11 @@ function SkeletonCard() {
 
 export function HomePage() {
   usePageMeta({
-    title: "Hebrew Clock Web Flasher — Flash Hebrew Words Clock Firmware",
+    title: "Hebrew Words Clock Web Flasher — Flash ESP32 Firmware from Your Browser",
     description:
-      "Flash Hebrew Words Clock firmware to your ESP32 device directly from your browser. No software or drivers needed — works in Chrome and Edge.",
+      "Flash your Hebrew Words Clock firmware to an ESP32 device directly from your browser. No software or drivers needed — works in Chrome and Edge.",
     keywords:
-      "Hebrew clock, ESP32 flasher, firmware, e-paper clock, word clock, Hebrew words, browser flash, XIAO ESP32-C3",
+      "Hebrew Words Clock, ESP32 flasher, firmware, e-paper clock, word clock, Hebrew, browser flash, XIAO ESP32-C3",
     ogImage:
       "https://github.com/t0mer/hebrew-clock/raw/main/assets/screenshots/clock-main-heebo-raanana.png",
   });

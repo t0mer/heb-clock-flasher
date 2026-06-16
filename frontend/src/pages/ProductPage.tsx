@@ -176,12 +176,12 @@ export function ProductPage() {
 
   usePageMeta({
     title: product
-      ? `${product.name} — Hebrew Clock Web Flasher`
-      : "Product — Hebrew Clock Web Flasher",
-    description: product?.tagline || "View product details and flash firmware to your ESP32 device.",
+      ? `${product.name} — Hebrew Words Clock Web Flasher`
+      : "Product — Hebrew Words Clock Web Flasher",
+    description: product?.tagline || "View Hebrew Words Clock product details and flash firmware to your ESP32 device.",
     keywords: product
-      ? `${product.name}, ${product.chip_families.join(", ")}, ESP32, firmware, Hebrew clock`
-      : "ESP32, firmware, Hebrew clock",
+      ? `${product.name}, Hebrew Words Clock, ${product.chip_families.join(", ")}, ESP32, firmware`
+      : "Hebrew Words Clock, ESP32, firmware",
     ogImage: product?.images?.[0] ?? undefined,
     ogType: "article",
   });
