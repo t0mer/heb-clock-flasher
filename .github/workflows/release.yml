@@ -20,9 +20,14 @@ jobs:
 
       - name: Resolve version
         id: version
+        env:
+          INPUT_VERSION: ${{ github.event.inputs.version }}
         run: |
-          if [ -n "${{ github.event.inputs.version }}" ]; then
-            VERSION="${{ github.event.inputs.version }}"
+          if [ -n "${INPUT_VERSION}" ]; then
+            if ! echo "${INPUT_VERSION}" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+              echo "Invalid version format: ${INPUT_VERSION}" && exit 1
+            fi
+            VERSION="${INPUT_VERSION}"
           else
             VERSION="$(bash scripts/next-version.sh)"
           fi
@@ -38,7 +43,7 @@ jobs:
           git push origin "${VERSION}"
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65  # v2
         with:
           tag_name: ${{ steps.version.outputs.version }}
           generate_release_notes: true
