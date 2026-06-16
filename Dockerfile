@@ -1,4 +1,16 @@
+# Stage 1: Build React/Vite frontend
+FROM node:20-alpine AS frontend
+WORKDIR /app/frontend
+COPY frontend/package*.json ./
+RUN npm ci --silent
+COPY frontend/ ./
+RUN npm run build
+# Output lands in /app/backend/static (vite outDir)
+
+# Stage 2: Python runtime
 FROM python:3.12-slim
+
+LABEL maintainer="tomer.klein@gmail.com"
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
@@ -8,21 +20,17 @@ ENV PYTHONUNBUFFERED=1 \
 ARG VERSION=dev
 ENV APP_VERSION=${VERSION}
 
-WORKDIR /app
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-      curl \
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
     && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
 
 COPY backend/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend/app/ /app/app/
+COPY --from=frontend /app/backend/static /app/static
 
-# Pre-built SPA — built by the CI workflow before docker buildx, not inside Docker
-COPY backend/static/ /app/static/
-
-# Firmware catalogue is mounted at runtime
 RUN mkdir -p /app/firmware
 
 RUN useradd --create-home --uid 10001 appuser \
