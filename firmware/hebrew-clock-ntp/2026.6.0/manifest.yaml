@@ -1,0 +1,19 @@
+changelog: Initial public release.
+chip_family: esp32c3
+console:
+  baud: 115200
+flash:
+  baud: 921600
+  erase_before: false
+notes: ''
+parts:
+- file: bootloader.bin
+  offset: '0x0'
+- file: partitions.bin
+  offset: '0x8000'
+- file: boot_app0.bin
+  offset: '0xe000'
+- file: app.bin
+  offset: '0x10000'
+released: '2026-06-20'
+version: 2026.6.0

@@ -1,0 +1,41 @@
+slug: hebrew-clock-ntp
+name: "Hebrew Clock (NTP)"
+tagline: "NTP-synced Hebrew word-clock for 7.5\" e-paper displays"
+summary: |
+  Hebrew word clock for a 7.5" 800×480 e-paper panel driven by a Seeed Studio
+  XIAO ESP32. Instead of digits, it spells out the current time in fully
+  vocalized Hebrew with niqud across up to three centered, right-to-left lines
+  (e.g. "שָׁלוֹשׁ וָרֶבַע בַּצָּהֳרַיִם"), alongside a date row that can show either
+  the Gregorian or Hebrew calendar.
+
+  The time is kept accurate automatically over **NTP** — no manual setting and
+  no RTC required. Wi-Fi is configured on first boot through an on-device
+  captive portal, and a built-in status page lets you check the live time,
+  device IP, toggle the date mode, and reconfigure Wi-Fi at runtime.
+repo: "https://github.com/t0mer/hebrew-clock-ntp"
+license: "Apache-2.0"
+chip_families:
+  - esp32c3
+  - esp32s3
+hardware:
+  - "Seeed Studio XIAO ESP32 (C3 or S3 variant)"
+  - "7.5\" 800×480 e-paper display"
+  - "Seeed Studio XIAO ePaper Driver Board (model 502, UC8179 controller)"
+images:
+  - "https://raw.githubusercontent.com/t0mer/hebrew-clock-ntp/main/assets/screenshots/device-clock.jpeg"
+  - "https://raw.githubusercontent.com/t0mer/hebrew-clock-ntp/main/assets/screenshots/device-wifi-setup.jpeg"
+  - "https://raw.githubusercontent.com/t0mer/hebrew-clock-ntp/main/assets/screenshots/setup-portal.jpeg"
+  - "https://raw.githubusercontent.com/t0mer/hebrew-clock-ntp/main/assets/screenshots/status-page.jpeg"
+features:
+  - "Time in fully vocalized Hebrew with niqud across up to three centered lines"
+  - "Right-to-left rendering with correct niqud placement"
+  - "Time-of-day period labels (morning / afternoon / evening / night / pre-dawn)"
+  - "Quarter, half-hour and \"minutes-to\" linguistic forms"
+  - "Automatic time sync over NTP — no RTC or manual setting needed"
+  - "Date row — Gregorian or Jewish (Hebrew) calendar mode, switchable at runtime"
+  - "Captive-portal Wi-Fi setup — no hardcoded credentials"
+  - "Status web page: live time, device IP, date-mode toggle, Wi-Fi reconfig"
+  - "Partial e-paper refresh each minute, periodic full refresh to prevent ghosting"
+links:
+  setup_guide: "https://github.com/t0mer/hebrew-clock-ntp#readme"
+order: 3
